@@ -1,0 +1,18 @@
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
+	logicalFilePath="db/changelog.xml">
+	<changeSet id="0000" author="Kola">
+		<insert tableName="user">
+			<column name="user_login" value="kotobot"/>
+			<column name="user_name" value="Jhon"/>
+			<column name="user_password" value="pass"/>
+		</insert>
+		<insert tableName="user">
+			<column name="user_login" value="tipka"/>
+			<column name="user_name" value="Michael"/>
+			<column name="user_password" value="qwerty123"/>
+		</insert>
+	</changeSet>
+</databaseChangeLog>
