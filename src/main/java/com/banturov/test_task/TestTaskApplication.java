@@ -3,13 +3,10 @@ package com.banturov.test_task;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.logging.LogLevel;
 import org.springframework.context.annotation.ComponentScan;
 
 import liquibase.Liquibase;

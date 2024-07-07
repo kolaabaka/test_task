@@ -8,6 +8,9 @@
 			<column autoIncrement="true" name="ticket_id" type="BIGINT">
 				<constraints primaryKey="true" nullable="false" />
 			</column>
+			<column name="carrier_id" type="BIGINT">
+				<constraints nullable="false" foreignKeyName="fk_ticket_carrier" references="carrier(carrier_id)"/>
+			</column>
 			<column name="route_id" type="BIGINT">
 				<constraints nullable="false" foreignKeyName="fk_ticket_route" references="route(route_id)"/>
 			</column>

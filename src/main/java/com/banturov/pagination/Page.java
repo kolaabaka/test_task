@@ -3,26 +3,36 @@ package com.banturov.pagination;
 public class Page {
 	private int page;
 	private int limit;
+	private String filterValue;
 
-	public Page(int page, int limit) {
+	public Page(int page, int limit, String filterValue) {
 		this.page = page;
 		this.limit = limit;
+		this.filterValue = filterValue;
 	}
 
-	public Integer getPage() {
+	public int getPage() {
 		return page;
 	}
 
-	public void setPage(Integer page) {
+	public void setPage(int page) {
 		this.page = page;
 	}
 
-	public Integer getLimit() {
+	public int getLimit() {
 		return limit;
 	}
 
-	public void setLimit(Integer limit) {
+	public void setLimit(int limit) {
 		this.limit = limit;
+	}
+
+	public String getFilterValue() {
+		return filterValue;
+	}
+
+	public void setFilterValue(String filterValue) {
+		this.filterValue = filterValue;
 	}
 
 }

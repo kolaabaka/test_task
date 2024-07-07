@@ -26,7 +26,7 @@ public class TicketController {
 
 	@GetMapping(path = "/show/freeTicket")
 	public ResponseEntity<List<Ticket>> getTicket(@RequestBody Page page) {
-		List resultList = TicketRepository.getFreeTicket(url, userName, password, page);
+		List<Ticket> resultList = TicketRepository.getFreeTicket(url, userName, password, page);
 		if(!resultList.isEmpty())
 			return new ResponseEntity<>(TicketRepository.getFreeTicket(url, userName, password, page), HttpStatus.OK);
 		else

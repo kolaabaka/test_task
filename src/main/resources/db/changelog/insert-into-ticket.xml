@@ -6,6 +6,7 @@
 	<changeSet id="008" author="Kola8">
 		<insert tableName="ticket">
 			<column name="route_id" value="1"/>
+			<column name="carrier_id" value="1"/>
 			<column name="buyer_id" value="1"/>
 			<column name="place_number" value="1"/>
 			<column name="price" value="200"/>
@@ -13,6 +14,7 @@
 		</insert>
 		<insert tableName="ticket">
 			<column name="route_id" value="1"/>
+			<column name="carrier_id" value="1"/>
 			<column name="buyer_id" value="2"/>
 			<column name="place_number" value="44"/>
 			<column name="price" value="200"/>
@@ -20,12 +22,14 @@
 		</insert>
 		<insert tableName="ticket">
 			<column name="route_id" value="1"/>
+			<column name="carrier_id" value="2"/>
 			<column name="place_number" value="66"/>
 			<column name="price" value="200"/>
 			<column name="date" value="22.22.22"/>
 		</insert>
 		<insert tableName="ticket">
 			<column name="route_id" value="1"/>
+			<column name="carrier_id" value="2"/>
 			<column name="place_number" value="7"/>
 			<column name="price" value="240"/>
 			<column name="date" value="22.22.22"/>
@@ -33,6 +37,7 @@
 		
 		<insert tableName="ticket">
 			<column name="route_id" value="2"/>
+			<column name="carrier_id" value="1"/>
 			<column name="buyer_id" value="2"/>
 			<column name="place_number" value="78"/>
 			<column name="price" value="456"/>
@@ -40,6 +45,7 @@
 		</insert>
 		<insert tableName="ticket">
 			<column name="route_id" value="2"/>
+			<column name="carrier_id" value="1"/>
 			<column name="place_number" value="102"/>
 			<column name="price" value="20"/>
 			<column name="date" value="29.11.55"/>
