@@ -1,0 +1,24 @@
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
+	logicalFilePath="db/changelog.xml">
+	<changeSet id="001" author="Kola1">
+		<insert tableName="carrier">
+			<column name="name" value="Dota1 courier"/>
+			<column name="number" value="88005553535"/>
+		</insert>
+		<insert tableName="carrier">
+			<column name="name" value="Dota2 courier"/>
+			<column name="number" value="53535550088"/>
+		</insert>
+		<insert tableName="carrier">
+			<column name="name" value="Dota banned courier"/>
+			<column name="number" value="8866699411"/>
+		</insert>
+		<insert tableName="carrier">
+			<column name="name" value="Dota banned courier"/>
+			<column name="number" value="12345678910"/>
+		</insert>
+	</changeSet>
+</databaseChangeLog>

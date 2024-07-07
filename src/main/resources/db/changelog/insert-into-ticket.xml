@@ -1,0 +1,48 @@
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
+	logicalFilePath="db/changelog.xml">
+	<changeSet id="008" author="Kola8">
+		<insert tableName="ticket">
+			<column name="route_id" value="1"/>
+			<column name="buyer_id" value="1"/>
+			<column name="place_number" value="1"/>
+			<column name="price" value="200"/>
+			<column name="date" value="22.22.22"/>
+		</insert>
+		<insert tableName="ticket">
+			<column name="route_id" value="1"/>
+			<column name="buyer_id" value="2"/>
+			<column name="place_number" value="44"/>
+			<column name="price" value="200"/>
+			<column name="date" value="22.22.22"/>
+		</insert>
+		<insert tableName="ticket">
+			<column name="route_id" value="1"/>
+			<column name="place_number" value="66"/>
+			<column name="price" value="200"/>
+			<column name="date" value="22.22.22"/>
+		</insert>
+		<insert tableName="ticket">
+			<column name="route_id" value="1"/>
+			<column name="place_number" value="7"/>
+			<column name="price" value="240"/>
+			<column name="date" value="22.22.22"/>
+		</insert>
+		
+		<insert tableName="ticket">
+			<column name="route_id" value="2"/>
+			<column name="buyer_id" value="2"/>
+			<column name="place_number" value="78"/>
+			<column name="price" value="456"/>
+			<column name="date" value="23.03.26"/>
+		</insert>
+		<insert tableName="ticket">
+			<column name="route_id" value="2"/>
+			<column name="place_number" value="102"/>
+			<column name="price" value="20"/>
+			<column name="date" value="29.11.55"/>
+		</insert>
+	</changeSet>
+</databaseChangeLog>

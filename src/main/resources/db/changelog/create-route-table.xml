@@ -3,19 +3,22 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
 	logicalFilePath="db/changelog.xml">
-	<changeSet id="003" author="Kola3">
-		<createTable tableName="user">
-			<column autoIncrement="true" name="user_id" type="BIGINT">
+	<changeSet id="005" author="Kola5">
+		<createTable tableName="route">
+			<column autoIncrement="true" name="route_id" type="BIGINT">
 				<constraints primaryKey="true" nullable="false" />
 			</column>
-			<column name="user_login" type="VARCHAR(30)">
+			<column name="departure" type="VARCHAR(30)">
 				<constraints nullable="false" />
 			</column>
-			<column name="user_name" type="VARCHAR(30)">
+			<column name="destination" type="VARCHAR(30)">
 				<constraints nullable="false" />
 			</column>
-			<column name="user_password" type="VARCHAR(30)">
+			<column name="duration" type="BIGINT">
 				<constraints nullable="false" />
+			</column>
+			<column name="carrier_id" type="BIGINT">
+				<constraints nullable="false" foreignKeyName="fk_route_carrier" references="carrier(carrier_id)"/>
 			</column>
 		</createTable>
 	</changeSet>

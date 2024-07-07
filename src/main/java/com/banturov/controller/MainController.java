@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,8 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.banturov.entity.Ticket;
 import com.banturov.entity.User;
+import com.banturov.pagination.Page;
+import com.banturov.repository.TicketRepository;
 import com.banturov.repository.UserRepository;
-import com.banturov.test_task.TestTaskApplication;
 
 @RestController
 @RequestMapping(produces = "application/json")
@@ -36,9 +36,10 @@ public class MainController {
 
 	@GetMapping(path = "/show/user")
 	public ResponseEntity<List<User>> getAll() throws SQLException {
-		ResultSet resultSet = null;
 		List<User> resultList = new ArrayList<>();
+
 		try (Connection connection = DriverManager.getConnection(url, userName, password)) {
+			ResultSet resultSet = null;
 			PreparedStatement preparedStatement = connection
 					.prepareStatement("SELECT user_login, user_name, user_password FROM user;");
 			resultSet = preparedStatement.executeQuery();
@@ -53,24 +54,6 @@ public class MainController {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity<>(resultList, HttpStatus.OK);
-	}
-
-	@GetMapping(path = "/login")
-	public ResponseEntity<Boolean> loginUser(@RequestBody User user) {
-		boolean status = UserRepository.checkUser(url, userName, password, user);
-		if (status)
-			return new ResponseEntity<>(true, HttpStatus.OK);
-		else
-			return new ResponseEntity<>(false, HttpStatus.CONFLICT);
-	}
-
-	@PostMapping(path = "/register")
-	public ResponseEntity<Boolean> registerUser(@RequestBody User user) {
-		boolean status = UserRepository.addUser(url, userName, password, user);
-		if (status)
-			return new ResponseEntity<>(true, HttpStatus.OK);
-		else
-			return new ResponseEntity<>(false, HttpStatus.CONFLICT);
 	}
 
 }

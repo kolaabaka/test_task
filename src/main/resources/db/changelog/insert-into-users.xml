@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
 	logicalFilePath="db/changelog.xml">
-	<changeSet id="0000" author="Kola">
+	<changeSet id="002" author="Kola2">
 		<insert tableName="user">
 			<column name="user_login" value="kotobot"/>
 			<column name="user_name" value="Jhon"/>

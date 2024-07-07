@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.logging.LogLevel;
@@ -21,7 +22,7 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 @ComponentScan("com.banturov")
 @SpringBootApplication
 public class TestTaskApplication {
-
+	
 	private static String url = "jdbc:mysql://localhost:3306/test";
 	private static String userName = "root";
 	private static String password = "root";

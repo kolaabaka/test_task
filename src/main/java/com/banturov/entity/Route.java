@@ -6,17 +6,16 @@ public class Route {
 
 	private String departure;
 	private String destination;
-	private String route;
+	private Integer carrierId;
 	private Integer duration;
 
 	public Route() {
 	}
 
-	public Route(String departure, String destination, String route, Integer duration) {
-		super();
+	public Route(String departure, String destination, Integer carrierId, Integer duration) {
 		this.departure = departure;
 		this.destination = destination;
-		this.route = route;
+		this.carrierId = carrierId;
 		this.duration = duration;
 	}
 
@@ -36,12 +35,12 @@ public class Route {
 		this.destination = destination;
 	}
 
-	public String getRoute() {
-		return route;
+	public Integer getCarrierId() {
+		return carrierId;
 	}
 
-	public void setRoute(String route) {
-		this.route = route;
+	public void setCarrierId(Integer carrierId) {
+		this.carrierId = carrierId;
 	}
 
 	public Integer getDuration() {
@@ -54,7 +53,7 @@ public class Route {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(departure, destination, duration, route);
+		return Objects.hash(carrierId, departure, destination, duration);
 	}
 
 	@Override
@@ -66,14 +65,14 @@ public class Route {
 		if (getClass() != obj.getClass())
 			return false;
 		Route other = (Route) obj;
-		return Objects.equals(departure, other.departure) && Objects.equals(destination, other.destination)
-				&& Objects.equals(duration, other.duration) && Objects.equals(route, other.route);
+		return Objects.equals(carrierId, other.carrierId) && Objects.equals(departure, other.departure)
+				&& Objects.equals(destination, other.destination) && Objects.equals(duration, other.duration);
 	}
 
 	@Override
 	public String toString() {
-		return "Route [departure=" + departure + ", destination=" + destination + ", route=" + route + ", duration="
-				+ duration + "]";
+		return "Route [departure=" + departure + ", destination=" + destination + ", carrierId=" + carrierId
+				+ ", duration=" + duration + "]";
 	}
 
 }

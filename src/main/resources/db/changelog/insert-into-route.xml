@@ -1,0 +1,20 @@
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
+	logicalFilePath="db/changelog.xml">
+	<changeSet id="006" author="Kola6">
+		<insert tableName="route">
+			<column name="departure" value="Moscow"/>
+			<column name="destination" value="London"/>
+			<column name="duration" value="15"/>
+			<column name="carrier_id" value="2"/>
+		</insert>
+		<insert tableName="route">
+			<column name="departure" value="Tokyo"/>
+			<column name="destination" value="Makao"/>
+			<column name="duration" value="556"/>
+			<column name="carrier_id" value="1"/>
+		</insert>
+	</changeSet>
+</databaseChangeLog>

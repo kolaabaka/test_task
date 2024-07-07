@@ -4,35 +4,55 @@ import java.util.Objects;
 
 public class Ticket {
 
-	private String name;
-	private Integer age;
-	
-	public Ticket(String name, Integer age) {
-		this.name = name;
-		this.age = age;
+	private Integer routeId;
+	private Integer buyerId;
+	private Integer placeNumber;
+	private Integer price;
+	private String date;
+	public Ticket(Integer routeId, Integer buyerId, Integer placeNumber, Integer price, String date) {
+		super();
+		this.routeId = routeId;
+		this.buyerId = buyerId;
+		this.placeNumber = placeNumber;
+		this.price = price;
+		this.date = date;
 	}
-
-	public String getName() {
-		return name;
+	public Ticket() {
 	}
-
-	public void setName(String name) {
-		this.name = name;
+	public Integer getRouteId() {
+		return routeId;
 	}
-
-	public Integer getAge() {
-		return age;
+	public void setRouteId(Integer routeId) {
+		this.routeId = routeId;
 	}
-
-	public void setAge(Integer age) {
-		this.age = age;
+	public Integer getBuyerId() {
+		return buyerId;
 	}
-
+	public void setBuyerId(Integer buyerId) {
+		this.buyerId = buyerId;
+	}
+	public Integer getPlaceNumber() {
+		return placeNumber;
+	}
+	public void setPlaceNumber(Integer placeNumber) {
+		this.placeNumber = placeNumber;
+	}
+	public Integer getPrice() {
+		return price;
+	}
+	public void setPrice(Integer price) {
+		this.price = price;
+	}
+	public String getDate() {
+		return date;
+	}
+	public void setDate(String date) {
+		this.date = date;
+	}
 	@Override
 	public int hashCode() {
-		return Objects.hash(age, name);
+		return Objects.hash(buyerId, date, placeNumber, price, routeId);
 	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -42,13 +62,15 @@ public class Ticket {
 		if (getClass() != obj.getClass())
 			return false;
 		Ticket other = (Ticket) obj;
-		return Objects.equals(age, other.age) && Objects.equals(name, other.name);
+		return Objects.equals(buyerId, other.buyerId) && Objects.equals(date, other.date)
+				&& Objects.equals(placeNumber, other.placeNumber) && Objects.equals(price, other.price)
+				&& Objects.equals(routeId, other.routeId);
 	}
-
 	@Override
 	public String toString() {
-		return "Ticket [name=" + name + ", age=" + age + "]";
+		return "Ticket [routeId=" + routeId + ", buyerId=" + buyerId + ", placeNumber=" + placeNumber + ", price="
+				+ price + ", date=" + date + "]";
 	}
-	
+
 	
 }
