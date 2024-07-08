@@ -8,16 +8,35 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.banturov.entity.User;
+import org.springframework.stereotype.Component;
 
+import com.banturov.entity.User;
+import com.banturov.exception.AlreadyExistException;
+
+@Component
 public class UserRepository {
 
 	private static Logger log = Logger.getLogger(UserRepository.class.getName());
 
-	//Registration
-	public static boolean addUser(String url, String userName, String password, User user) {
+	public UserRepository() {
+	}
+
+	// Registration
+	public boolean addUser(String url, String userName, String password, User user) throws AlreadyExistException, SQLException {
 		int id = 0;
+		if (user.getLogin().length() == 0 || user.getName().length() == 0 || user.getPassword().length() == 0) {
+			throw new IllegalArgumentException("Illegal user atribute");
+		}
 		try (Connection connection = DriverManager.getConnection(url, userName, password)) {
+			PreparedStatement checkLogin = connection.prepareStatement("SELECT user_id FROM user WHERE user_login = ?;");
+			checkLogin.setString(1, user.getLogin());
+			ResultSet checkSet = checkLogin.executeQuery();
+			if(checkSet.isBeforeFirst()) {
+				throw new AlreadyExistException("User login already exist");
+			}
+			checkLogin.close();
+			checkSet.close();
+			
 			PreparedStatement takeId = connection
 					.prepareStatement("SELECT user_id FROM user ORDER BY user_id DESC LIMIT 1;");
 			ResultSet resultSet = takeId.executeQuery();
@@ -38,14 +57,17 @@ public class UserRepository {
 			connection.close();
 		} catch (SQLException e) {
 			log.log(Level.WARNING, e.getMessage());
-			return false;
+			throw new SQLException("SQL server error");
 		}
 		log.log(Level.INFO, "Create new user: " + user.getLogin());
 		return true;
 	}
 
-	//Login 
-	public static boolean checkUser(String url, String userName, String password, User user) {
+	// Login
+	public boolean checkUser(String url, String userName, String password, User user) throws SQLException {
+		if (user.getLogin().length() == 0 || user.getName().length() == 0 || user.getPassword().length() == 0) {
+			throw new IllegalArgumentException("Illegal user atributes");
+		}
 		try (Connection connection = DriverManager.getConnection(url, userName, password)) {
 			PreparedStatement loginUser = connection.prepareStatement(
 					"SELECT user_id FROM user WHERE user_login = ? and user_name = ? and user_password = ?;");
@@ -62,9 +84,8 @@ public class UserRepository {
 			return true;
 		} catch (SQLException e) {
 			log.log(Level.WARNING, e.getMessage());
-			return false;
+			throw new SQLException("SQL server error");
 		}
 	}
-	
-	
+
 }

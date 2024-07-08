@@ -9,17 +9,25 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.banturov.configuration.DbConnection;
 import com.banturov.entity.Purchase;
 import com.banturov.entity.Ticket;
 import com.banturov.entity.User;
 import com.banturov.pagination.Page;
 
+@Component
 public class TicketRepository {
 
 	private static Logger log = Logger.getLogger(TicketRepository.class.getName());
+	
+	public TicketRepository() {
+	}
 
 	// Get free tickets
-	public static List<Ticket> getFreeTicket(String url, String userName, String password, Page page) {
+	public List<Ticket> getFreeTicket(String url, String userName, String password, Page page) {
 		List<Ticket> resultList = new ArrayList<>();
 		try (Connection connection = DriverManager.getConnection(url, userName, password)) {
 			PreparedStatement getFreeTickets = connection
@@ -39,7 +47,7 @@ public class TicketRepository {
 	}
 
 	// Filter by carrier name
-	public static List<Ticket> getTicketFilterCarrier(String url, String userName, String password, Page page) {
+	public List<Ticket> getTicketFilterCarrier(String url, String userName, String password, Page page) {
 		List<Ticket> resultList = new ArrayList<>();
 		try (Connection connection = DriverManager.getConnection(url, userName, password)) {
 			PreparedStatement getFreeTickets = connection.prepareStatement(
@@ -60,10 +68,11 @@ public class TicketRepository {
 	}
 
 	// Filter by date
-	public static List<Ticket> getTicketFilterDate(String url, String userName, String password, Page page) {
+	public List<Ticket> getTicketFilterDate(String url, String userName, String password, Page page) {
 		List<Ticket> resultList = new ArrayList<>();
 		try (Connection connection = DriverManager.getConnection(url, userName, password)) {
-			PreparedStatement getFreeTickets = connection.prepareStatement("SELECT * FROM ticket WHERE date = ? limit ? offset ?;");
+			PreparedStatement getFreeTickets = connection
+					.prepareStatement("SELECT * FROM ticket WHERE date = ? limit ? offset ?;");
 			getFreeTickets.setString(1, page.getFilterValue());
 			getFreeTickets.setInt(2, page.getLimit());
 			getFreeTickets.setInt(3, page.getLimit() * page.getPage());
@@ -80,7 +89,7 @@ public class TicketRepository {
 	}
 
 	// Filter by Departure
-	public static List<Ticket> getTicketFilterDeparture(String url, String userName, String password, Page page) {
+	public List<Ticket> getTicketFilterDeparture(String url, String userName, String password, Page page) {
 		List<Ticket> resultList = new ArrayList<>();
 		try (Connection connection = DriverManager.getConnection(url, userName, password)) {
 			PreparedStatement getFreeTickets = connection.prepareStatement(
@@ -101,7 +110,7 @@ public class TicketRepository {
 	}
 
 	// Filter by Departure
-	public static List<Ticket> getTicketFilterDestination(String url, String userName, String password, Page page) {
+	public List<Ticket> getTicketFilterDestination(String url, String userName, String password, Page page) {
 		List<Ticket> resultList = new ArrayList<>();
 		try (Connection connection = DriverManager.getConnection(url, userName, password)) {
 			PreparedStatement getFreeTickets = connection.prepareStatement(
@@ -120,9 +129,9 @@ public class TicketRepository {
 		}
 		return resultList;
 	}
-	
-	//Purchased tickets
-	public static List<Ticket> showPurchasedTicket(String url, String userName, String password, Purchase purchase) {
+
+	// Purchased tickets
+	public List<Ticket> showPurchasedTicket(String url, String userName, String password, Purchase purchase) {
 		List<Ticket> resultList = new ArrayList<>();
 		try (Connection connection = DriverManager.getConnection(url, userName, password)) {
 			PreparedStatement getPurchasedTickets = connection.prepareStatement(
@@ -141,7 +150,7 @@ public class TicketRepository {
 		}
 		return resultList;
 	}
-	
-	//Buy ticket
-	
+
+	// Buy ticket
+//	public static 
 }
