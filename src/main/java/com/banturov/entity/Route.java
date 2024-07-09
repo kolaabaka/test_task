@@ -2,11 +2,17 @@ package com.banturov.entity;
 
 import java.util.Objects;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class Route {
 
+	@Schema(description = "Departure trip")
 	private String departure;
+	@Schema(description = "Destination trip")
 	private String destination;
+	@Schema(description = "SQL ID carrier")
 	private Integer carrierId;
+	@Schema(description = "Duration of the trip")
 	private Integer duration;
 
 	public Route() {

@@ -2,12 +2,19 @@ package com.banturov.entity;
 
 import java.util.Objects;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class Ticket {
 
+	@Schema(description = "SQL ID of the route")
 	private Integer routeId;
+	@Schema(description = "Sql ID of the buyer")
 	private Integer buyerId;
+	@Schema(description = "Number of the place")
 	private Integer placeNumber;
+	@Schema(description = "Price of the trip")
 	private Integer price;
+	@Schema(description = "Date of the trip")
 	private String date;
 	public Ticket(Integer routeId, Integer buyerId, Integer placeNumber, Integer price, String date) {
 		super();

@@ -2,9 +2,13 @@ package com.banturov.entity;
 
 import java.util.Objects;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class Сarrier {
 
+	@Schema(description = "Name of the carrier")
 	private String name;
+	@Schema(description = "Phone number")
 	private String number;
 
 	public Сarrier() {

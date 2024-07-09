@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -46,8 +48,12 @@ public class TicketRepository {
 	}
 
 	// Filter by carrier name
-	public List<Ticket> getTicketFilterCarrier(String url, String userName, String password, Page page) {
+	public List<Ticket> getTicketFilterCarrier(String url, String userName, String password, Page page)
+			throws Exception {
 		List<Ticket> resultList = new ArrayList<>();
+		if (page.getFilterValue().length() < 1) {
+			throw new IllegalArgumentException();
+		}
 		try (Connection connection = DriverManager.getConnection(url, userName, password)) {
 			PreparedStatement getFreeTickets = connection.prepareStatement(
 					"SELECT * FROM ticket WHERE carrier_id = (select carrier_id FROM carrier where name = ?) limit ? offset ?;");
@@ -62,13 +68,20 @@ public class TicketRepository {
 			}
 		} catch (Exception e) {
 			log.log(Level.WARNING, e.getMessage());
+			throw new SQLException("SQL server error");
 		}
 		return resultList;
 	}
 
 	// Filter by date
-	public List<Ticket> getTicketFilterDate(String url, String userName, String password, Page page) {
+	public List<Ticket> getTicketFilterDate(String url, String userName, String password, Page page) throws Exception {
 		List<Ticket> resultList = new ArrayList<>();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd:mm:yy");
+		try {
+			dateFormat.parse(page.getFilterValue());
+		} catch (ParseException e) {
+			throw new IllegalArgumentException();
+		}
 		try (Connection connection = DriverManager.getConnection(url, userName, password)) {
 			PreparedStatement getFreeTickets = connection
 					.prepareStatement("SELECT * FROM ticket WHERE date = ? limit ? offset ?;");
@@ -83,13 +96,18 @@ public class TicketRepository {
 			}
 		} catch (Exception e) {
 			log.log(Level.WARNING, e.getMessage());
+			throw new SQLException("SQL server error");
 		}
 		return resultList;
 	}
 
 	// Filter by Departure
-	public List<Ticket> getTicketFilterDeparture(String url, String userName, String password, Page page) {
+	public List<Ticket> getTicketFilterDeparture(String url, String userName, String password, Page page)
+			throws Exception {
 		List<Ticket> resultList = new ArrayList<>();
+		if (page.getFilterValue().length() < 1) {
+			throw new IllegalArgumentException();
+		}
 		try (Connection connection = DriverManager.getConnection(url, userName, password)) {
 			PreparedStatement getFreeTickets = connection.prepareStatement(
 					"SELECT * FROM ticket where route_id = (SELECT route_id FROM route WHERE departure = ?)limit ? offset ?;");
@@ -104,13 +122,18 @@ public class TicketRepository {
 			}
 		} catch (Exception e) {
 			log.log(Level.WARNING, e.getMessage());
+			throw new SQLException("SQL server error");
 		}
 		return resultList;
 	}
 
 	// Filter by Departure
-	public List<Ticket> getTicketFilterDestination(String url, String userName, String password, Page page) {
+	public List<Ticket> getTicketFilterDestination(String url, String userName, String password, Page page)
+			throws Exception {
 		List<Ticket> resultList = new ArrayList<>();
+		if (page.getFilterValue().length() < 1) {
+			throw new IllegalArgumentException();
+		}
 		try (Connection connection = DriverManager.getConnection(url, userName, password)) {
 			PreparedStatement getFreeTickets = connection.prepareStatement(
 					"SELECT * FROM ticket where route_id = (SELECT route_id FROM route WHERE destination = ?)limit ? offset ?;");
@@ -125,14 +148,18 @@ public class TicketRepository {
 			}
 		} catch (Exception e) {
 			log.log(Level.WARNING, e.getMessage());
+			throw new SQLException("SQL server error");
 		}
 		return resultList;
 	}
 
 	// Purchased tickets
-	public List<Ticket> showPurchasedTicket(String url, String userName, String password,
-			PurchaseFilter PurchaseFilter) {
+	public List<Ticket> showPurchasedTicket(String url, String userName, String password, PurchaseFilter PurchaseFilter)
+			throws Exception {
 		List<Ticket> resultList = new ArrayList<>();
+		if (PurchaseFilter.getUser().getLogin().length() < 1) {
+			throw new IllegalArgumentException();
+		}
 		try (Connection connection = DriverManager.getConnection(url, userName, password)) {
 			PreparedStatement getPurchasedTickets = connection.prepareStatement(
 					"SELECT * FROM ticket where buyer_id = (SELECT user_id FROM user WHERE user_login = ?) limit ? offset ?;");
@@ -147,6 +174,7 @@ public class TicketRepository {
 			}
 		} catch (Exception e) {
 			log.log(Level.WARNING, e.getMessage());
+			throw new SQLException("SQL server error");
 		}
 		return resultList;
 	}
@@ -162,13 +190,11 @@ public class TicketRepository {
 			if (!resultSet.isBeforeFirst()) {
 				throw new IllegalAccessException("Ticket already purchased or doesn`t exist");
 			}
-			connection.setAutoCommit(false);
 			PreparedStatement buyTickets = connection.prepareStatement(
 					"UPDATE ticket SET buyer_id = (SELECT user_id FROM user WHERE user_login = ?) WHERE ticket_id = ?;");
 			buyTickets.setString(1, buyTicket.getUser().getLogin());
 			buyTickets.setInt(2, buyTicket.getTicket_id());
 			int amountUpdate = buyTickets.executeUpdate();
-			connection.commit();
 			getPurchasedTickets.close();
 			resultSet.close();
 			buyTickets.close();

@@ -1,8 +1,12 @@
 package com.banturov.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class BuyTicket {
 
+	@Schema(description = "Buyer user entity")
 	private User user;
+	@Schema(description = "SQL ID ticket")
 	private Integer ticket_id;
 
 	public User getUser() {

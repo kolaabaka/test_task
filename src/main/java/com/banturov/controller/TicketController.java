@@ -1,5 +1,6 @@
 package com.banturov.controller;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,11 @@ import com.banturov.entity.Ticket;
 import com.banturov.pagination.Page;
 import com.banturov.repository.TicketRepository;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Ticket controller", description = "Allow check and buy tickets ")
 @RestController
 @RequestMapping(produces = "application/json")
 public class TicketController {
@@ -28,8 +34,9 @@ public class TicketController {
 	@Autowired
 	private TicketRepository rep;
 
+	@Operation(summary = "Shows all tickets not purchased", description = "Show all not purchased tickets")
 	@GetMapping(path = "/show/freeTicket")
-	public ResponseEntity<List<Ticket>> getTicket(@RequestBody Page page) {
+	public ResponseEntity<List<Ticket>> getTicket(@RequestBody @Parameter(required = true) Page page) {
 		List<Ticket> resultList = rep.getFreeTicket(url, userName, password, page);
 		if (!resultList.isEmpty())
 			return new ResponseEntity<>(resultList, HttpStatus.OK);
@@ -37,53 +44,104 @@ public class TicketController {
 			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
 	}
 
+	@Operation(summary = "Shows all tickets filtered by carrier")
 	@GetMapping(path = "/filter/ticket/carrier")
-	public ResponseEntity<List<Ticket>> filterCarrier(@RequestBody Page page) {
-		List<Ticket> resultList = rep.getTicketFilterCarrier(url, userName, password, page);
-		if (!resultList.isEmpty())
-			return new ResponseEntity<>(resultList, HttpStatus.OK);
-		else
-			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+	public ResponseEntity<List<Ticket>> filterCarrier(
+			@RequestBody @Parameter(required = true, example = "Dota banned courier") Page page) throws Exception {
+		List<Ticket> resultList;
+		try {
+			resultList = rep.getTicketFilterCarrier(url, userName, password, page);
+			if (!resultList.isEmpty())
+				return new ResponseEntity<>(resultList, HttpStatus.OK);
+			else
+				return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+		} catch (SQLException e) {
+			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+
 	}
 
+	@Operation(summary = "Shows all tickets filtered by date")
 	@GetMapping(path = "/filter/ticket/date")
-	public ResponseEntity<List<Ticket>> filterDate(@RequestBody Page page) {
-		List<Ticket> resultList = rep.getTicketFilterDate(url, userName, password, page);
-		if (!resultList.isEmpty())
-			return new ResponseEntity<>(resultList, HttpStatus.OK);
-		else
-			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+	public ResponseEntity<List<Ticket>> filterDate(
+			@RequestBody @Parameter(required = true, example = "dd:mm:yy - 22:22:22") Page page) throws Exception {
+		List<Ticket> resultList;
+		try {
+			resultList = rep.getTicketFilterDate(url, userName, password, page);
+			if (!resultList.isEmpty())
+				return new ResponseEntity<>(resultList, HttpStatus.OK);
+			else
+				return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+		} catch (SQLException e) {
+			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+
 	}
 
+	@Operation(summary = "Shows all tickets filtered by departure")
 	@GetMapping(path = "/filter/ticket/departure")
-	public ResponseEntity<List<Ticket>> filterDeparture(@RequestBody Page page) {
-		List<Ticket> resultList = rep.getTicketFilterDeparture(url, userName, password, page);
-		if (!resultList.isEmpty())
-			return new ResponseEntity<>(resultList, HttpStatus.OK);
-		else
-			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+	public ResponseEntity<List<Ticket>> filterDeparture(
+			@RequestBody @Parameter(required = true, example = "Moscow") Page page) throws Exception {
+		List<Ticket> resultList;
+		try {
+			resultList = rep.getTicketFilterDeparture(url, userName, password, page);
+			if (!resultList.isEmpty())
+				return new ResponseEntity<>(resultList, HttpStatus.OK);
+			else
+				return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+		} catch (SQLException e) {
+			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+
 	}
 
+	@Operation(summary = "Shows all tickets filtered by destination")
 	@GetMapping(path = "/filter/ticket/destination")
-	public ResponseEntity<List<Ticket>> filterDestination(@RequestBody Page page) {
-		List<Ticket> resultList = rep.getTicketFilterDestination(url, userName, password, page);
-		if (!resultList.isEmpty())
-			return new ResponseEntity<>(resultList, HttpStatus.OK);
-		else
-			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+	public ResponseEntity<List<Ticket>> filterDestination(
+			@RequestBody @Parameter(required = true, example = "London") Page page) throws Exception {
+		List<Ticket> resultList;
+		try {
+			resultList = rep.getTicketFilterDestination(url, userName, password, page);
+			if (!resultList.isEmpty())
+				return new ResponseEntity<>(resultList, HttpStatus.OK);
+			else
+				return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+		} catch (SQLException e) {
+			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+
 	}
 
+	@Operation(summary = "Shows all purchased tickets by certain user")
 	@GetMapping(path = "/filter/ticket/purchased")
-	public ResponseEntity<List<Ticket>> filterPurchased(@RequestBody PurchaseFilter PurchaseFilter) {
-		List<Ticket> resultList = rep.showPurchasedTicket(url, userName, password, PurchaseFilter);
-		if (!resultList.isEmpty())
-			return new ResponseEntity<>(resultList, HttpStatus.OK);
-		else
-			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+	public ResponseEntity<List<Ticket>> filterPurchased(
+			@RequestBody @Parameter(required = true) PurchaseFilter PurchaseFilter) throws Exception {
+		List<Ticket> resultList;
+		try {
+			resultList = rep.showPurchasedTicket(url, userName, password, PurchaseFilter);
+			if (!resultList.isEmpty())
+				return new ResponseEntity<>(resultList, HttpStatus.OK);
+			else
+				return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+		} catch (SQLException e) {
+			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+
 	}
 
+	@Operation(summary = "Allow buy ticket", description = "")
 	@PatchMapping(path = "/ticket/buy")
-	public ResponseEntity<String> buyTicket(@RequestBody BuyTicket buyTicket) {
+	public ResponseEntity<String> buyTicket(@RequestBody @Parameter(required = true) BuyTicket buyTicket) {
 		try {
 			String status = rep.buyTicket(url, userName, password, buyTicket);
 			return new ResponseEntity<String>(status, HttpStatus.OK);

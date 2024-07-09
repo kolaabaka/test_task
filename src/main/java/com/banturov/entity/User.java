@@ -2,10 +2,16 @@ package com.banturov.entity;
 
 import java.util.Objects;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "User entiry")
 public class User {
 
+	@Schema(description = "User login, must be unique and no empty", example = "string")
 	private String login;
+	@Schema(description = "User password, must be not empty", example = "string")
 	private String password;
+	@Schema(description = "User name", example = "string")
 	private String name;
 
 	public User() {
