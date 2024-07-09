@@ -2,7 +2,7 @@ package com.banturov.entity;
 
 import com.banturov.pagination.Page;
 
-public class Purchase {
+public class PurchaseFilter {
 
 	private Page page;
 	private User user;

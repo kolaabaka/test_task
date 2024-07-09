@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.banturov.entity.Purchase;
+import com.banturov.entity.BuyTicket;
+import com.banturov.entity.PurchaseFilter;
 import com.banturov.entity.Ticket;
 import com.banturov.pagination.Page;
 import com.banturov.repository.TicketRepository;
@@ -72,11 +74,21 @@ public class TicketController {
 	}
 
 	@GetMapping(path = "/filter/ticket/purchased")
-	public ResponseEntity<List<Ticket>> filterPurchased(@RequestBody Purchase purchase) {
-		List<Ticket> resultList = rep.showPurchasedTicket(url, userName, password, purchase);
+	public ResponseEntity<List<Ticket>> filterPurchased(@RequestBody PurchaseFilter PurchaseFilter) {
+		List<Ticket> resultList = rep.showPurchasedTicket(url, userName, password, PurchaseFilter);
 		if (!resultList.isEmpty())
 			return new ResponseEntity<>(resultList, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+	}
+
+	@PatchMapping(path = "/ticket/buy")
+	public ResponseEntity<String> buyTicket(@RequestBody BuyTicket buyTicket) {
+		try {
+			String status = rep.buyTicket(url, userName, password, buyTicket);
+			return new ResponseEntity<String>(status, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
 	}
 }
