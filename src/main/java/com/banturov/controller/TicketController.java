@@ -27,7 +27,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping(produces = "application/json")
 public class TicketController {
 
-	private static String url = "jdbc:mysql://localhost:3306/test";
+	private static String url = "jdbc:mysql://localhost:3306/ticket_db";
 	private static String userName = "root";
 	private static String password = "root";
 

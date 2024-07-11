@@ -5,12 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
-
-import com.banturov.configuration.DbConnection;
 
 import liquibase.Liquibase;
 import liquibase.database.Database;
@@ -22,11 +19,11 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 @ComponentScan("com.banturov")
 @SpringBootApplication
 public class TestTaskApplication {
-	
-	private static String url = "jdbc:mysql://localhost:3306/test";
+
+	private static String url = "jdbc:mysql://localhost:3306/ticket_db";
 	private static String userName = "root";
 	private static String password = "root";
-	
+
 	private static Logger log = Logger.getLogger(TestTaskApplication.class.getName());
 
 	public static void main(String[] args) throws SQLException, LiquibaseException {
@@ -37,7 +34,7 @@ public class TestTaskApplication {
 		} catch (Exception e) {
 			log.warning("SQL IS NOT CONNECTED " + e.getMessage());
 		}
-		
+
 		Connection connection = DriverManager.getConnection(url, userName, password);
 		Database correctDataBase = DatabaseFactory.getInstance()
 				.findCorrectDatabaseImplementation(new JdbcConnection(connection));
