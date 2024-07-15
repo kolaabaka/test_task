@@ -9,6 +9,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
+import com.banturov.configuration.PropertiesConfig;
+
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -20,11 +22,17 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 @SpringBootApplication
 public class TestTaskApplication {
 
-	private static String url = "jdbc:mysql://localhost:3306/ticket_db";
-	private static String userName = "root";
-	private static String password = "root";
-
 	private static Logger log = Logger.getLogger(TestTaskApplication.class.getName());
+
+	private static String url = null;
+	private static String userName = null;
+	private static String password = null;
+
+	static {
+		url = PropertiesConfig.get("db.url");
+		userName = PropertiesConfig.get("db.login");
+		password = PropertiesConfig.get("db.password");
+	}
 
 	public static void main(String[] args) throws SQLException, LiquibaseException {
 		SpringApplication.run(TestTaskApplication.class, args);

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.banturov.configuration.PropertiesConfig;
 import com.banturov.entity.User;
 import com.banturov.kafka.KafkaTicketProducer;
 import com.banturov.repository.UserRepository;
@@ -24,20 +25,26 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping(path = "/user", produces = "application/json")
 public class UserController {
-
-	private static String url = "jdbc:mysql://localhost:3306/ticket_db";
-	private static String userName = "root";
-	private static String password = "root";
 	
+	private static Logger log = Logger.getLogger(UserController.class.getName());
+
+	private static String url = null;
+	private static String userName = null;
+	private static String password = null;
+
+	static {
+		url = PropertiesConfig.get("db.url");
+		userName = PropertiesConfig.get("db.login");
+		password = PropertiesConfig.get("db.password");
+	}
 	@Autowired
 	private UserRepository rep;
 
-	private static Logger log = Logger.getLogger(UserController.class.getName());
 
-	@Operation(summary = "Login user", 
-			   description = "Allow login user")
+	@Operation(summary = "Login user", description = "Allow login user")
 	@GetMapping(path = "/login")
-	public ResponseEntity<String> loginUser(@RequestBody@Parameter(required = true, description = "An entity with data for user login") User user) {
+	public ResponseEntity<String> loginUser(
+			@RequestBody @Parameter(required = true, description = "An entity with data for user login") User user) {
 		boolean status;
 		try {
 			status = rep.checkUser(url, userName, password, user);
@@ -51,10 +58,10 @@ public class UserController {
 
 	}
 
-	@Operation(summary = "Register user", 
-			   description = "Allow register user")
+	@Operation(summary = "Register user", description = "Allow register user")
 	@PostMapping(path = "/register")
-	public ResponseEntity<String> registerUser(@RequestBody@Parameter(description = "An entity with data for user registration", required = true) User user) {
+	public ResponseEntity<String> registerUser(
+			@RequestBody @Parameter(description = "An entity with data for user registration", required = true) User user) {
 		boolean status;
 		try {
 			status = rep.addUser(url, userName, password, user);
@@ -67,6 +74,5 @@ public class UserController {
 		}
 
 	}
-	
-	
+
 }

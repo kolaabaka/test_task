@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.banturov.configuration.PropertiesConfig;
 import com.banturov.entity.BuyTicket;
 import com.banturov.entity.PurchaseFilter;
 import com.banturov.entity.Ticket;
@@ -28,10 +29,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping(produces = "application/json")
 public class TicketController {
 
-	private static String url = "jdbc:mysql://localhost:3306/ticket_db";
-	private static String userName = "root";
-	private static String password = "root";
+	private static String url = null;
+	private static String userName = null;
+	private static String password = null;
 
+	static {
+		url = PropertiesConfig.get("db.url");
+		userName = PropertiesConfig.get("db.login");
+		password = PropertiesConfig.get("db.password");
+	}
 	@Autowired
 	private KafkaTicketProducer kf;
 
@@ -62,7 +68,7 @@ public class TicketController {
 		} catch (SQLException e) {
 			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
 		} catch (IllegalArgumentException e) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(null, HttpStatus.valueOf(400));
 		}
 
 	}
@@ -81,7 +87,7 @@ public class TicketController {
 		} catch (SQLException e) {
 			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
 		} catch (IllegalArgumentException e) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(null, HttpStatus.valueOf(400));
 		}
 
 	}
@@ -100,7 +106,7 @@ public class TicketController {
 		} catch (SQLException e) {
 			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
 		} catch (IllegalArgumentException e) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(null, HttpStatus.valueOf(400));
 		}
 
 	}
@@ -119,7 +125,7 @@ public class TicketController {
 		} catch (SQLException e) {
 			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
 		} catch (IllegalArgumentException e) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(null, HttpStatus.valueOf(400));
 		}
 
 	}
@@ -138,7 +144,7 @@ public class TicketController {
 		} catch (SQLException e) {
 			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
 		} catch (IllegalArgumentException e) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(null, HttpStatus.valueOf(400));
 		}
 
 	}
@@ -151,7 +157,7 @@ public class TicketController {
 			kf.sendMessage(rep.findTicketById(url, userName, password, buyTicket.getTicket_id()));
 			return new ResponseEntity<String>(status, HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(400));
 		}
 	}
 }
