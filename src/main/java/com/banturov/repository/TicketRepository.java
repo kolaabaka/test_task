@@ -127,7 +127,7 @@ public class TicketRepository {
 		return resultList;
 	}
 
-	// Filter by Departure
+	// Filter by Destination
 	public List<Ticket> getTicketFilterDestination(String url, String userName, String password, Page page)
 			throws Exception {
 		List<Ticket> resultList = new ArrayList<>();
@@ -190,6 +190,7 @@ public class TicketRepository {
 			if (!resultSet.isBeforeFirst()) {
 				throw new IllegalAccessException("Ticket already purchased or doesn`t exist");
 			}
+			resultSet.close();
 			PreparedStatement buyTickets = connection.prepareStatement(
 					"UPDATE ticket SET buyer_id = (SELECT user_id FROM user WHERE user_login = ?) WHERE ticket_id = ?;");
 			buyTickets.setString(1, buyTicket.getUser().getLogin());
@@ -203,6 +204,22 @@ public class TicketRepository {
 			log.log(Level.WARNING, e.getMessage());
 			throw new SQLException("SQL server error");
 		}
+	}
+
+	public Ticket findTicketById(String url, String userName, String password, int id) throws SQLException {
+		Ticket tick = new Ticket();
+		try (Connection connection = DriverManager.getConnection(url, userName, password)) {
+			PreparedStatement finTicketById = connection.prepareStatement("SELECT * FROM ticket WHERE ticket_id = ?;");
+			finTicketById.setInt(1, id);
+			ResultSet resultSet = finTicketById.executeQuery();
+			resultSet.next();
+			tick = new Ticket(resultSet.getInt(3), resultSet.getInt(4), resultSet.getInt(5), resultSet.getInt(6),
+					resultSet.getString(7));
+		} catch (SQLException e) {
+			log.log(Level.WARNING, e.getMessage());
+			throw new SQLException("SQL server error");
+		}
+		return tick;
 	}
 
 }

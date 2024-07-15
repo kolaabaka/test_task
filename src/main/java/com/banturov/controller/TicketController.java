@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.banturov.entity.BuyTicket;
 import com.banturov.entity.PurchaseFilter;
 import com.banturov.entity.Ticket;
+import com.banturov.kafka.KafkaTicketProducer;
 import com.banturov.pagination.Page;
 import com.banturov.repository.TicketRepository;
 
@@ -30,6 +31,9 @@ public class TicketController {
 	private static String url = "jdbc:mysql://localhost:3306/ticket_db";
 	private static String userName = "root";
 	private static String password = "root";
+
+	@Autowired
+	private KafkaTicketProducer kf;
 
 	@Autowired
 	private TicketRepository rep;
@@ -144,6 +148,7 @@ public class TicketController {
 	public ResponseEntity<String> buyTicket(@RequestBody @Parameter(required = true) BuyTicket buyTicket) {
 		try {
 			String status = rep.buyTicket(url, userName, password, buyTicket);
+			kf.sendMessage(rep.findTicketById(url, userName, password, buyTicket.getTicket_id()));
 			return new ResponseEntity<String>(status, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);

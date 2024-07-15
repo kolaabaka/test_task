@@ -7,8 +7,9 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.3.1</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<relativePath />
 	</parent>
+	<packaging>jar</packaging>
 	<groupId>com.banturov</groupId>
 	<artifactId>test_task</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -55,13 +56,11 @@
 		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
-			<version>9.0.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
-			<version>4.28.0</version>
 		</dependency>
 
 		<dependency>
