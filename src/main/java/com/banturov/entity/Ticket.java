@@ -1,10 +1,11 @@
 package com.banturov.entity;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public class Ticket {
+public class Ticket implements Serializable{
 
 	@Schema(description = "SQL ID of the route")
 	private Integer routeId;
