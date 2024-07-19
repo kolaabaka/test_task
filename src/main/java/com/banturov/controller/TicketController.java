@@ -1,6 +1,7 @@
 package com.banturov.controller;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,68 +55,12 @@ public class TicketController {
 			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
 	}
 
-	@Operation(summary = "Shows all tickets filtered by carrier")
-	@GetMapping(path = "/filter/ticket/carrier")
-	public ResponseEntity<List<Ticket>> filterCarrier(
-			@RequestBody @Parameter(required = true, example = "Dota banned courier") Page page) throws Exception {
-		List<Ticket> resultList;
-		try {
-			resultList = rep.getTicketFilterCarrier(url, userName, password, page);
-			if (!resultList.isEmpty())
-				return new ResponseEntity<>(resultList, HttpStatus.OK);
-			else
-				return new ResponseEntity<>(null, HttpStatus.CONFLICT);
-		} catch (SQLException e) {
-			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
-		} catch (IllegalArgumentException e) {
-			return new ResponseEntity<>(null, HttpStatus.valueOf(400));
-		}
-
-	}
-
-	@Operation(summary = "Shows all tickets filtered by date")
-	@GetMapping(path = "/filter/ticket/date")
-	public ResponseEntity<List<Ticket>> filterDate(
-			@RequestBody @Parameter(required = true, example = "dd:mm:yy - 22:22:22") Page page) throws Exception {
-		List<Ticket> resultList;
-		try {
-			resultList = rep.getTicketFilterDate(url, userName, password, page);
-			if (!resultList.isEmpty())
-				return new ResponseEntity<>(resultList, HttpStatus.OK);
-			else
-				return new ResponseEntity<>(null, HttpStatus.CONFLICT);
-		} catch (SQLException e) {
-			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
-		} catch (IllegalArgumentException e) {
-			return new ResponseEntity<>(null, HttpStatus.valueOf(400));
-		}
-
-	}
-
-	@Operation(summary = "Shows all tickets filtered by departure")
-	@GetMapping(path = "/filter/ticket/departure")
-	public ResponseEntity<List<Ticket>> filterDeparture(
-			@RequestBody @Parameter(required = true, example = "Moscow") Page page) throws Exception {
-		List<Ticket> resultList;
-		try {
-			resultList = rep.getTicketFilterDeparture(url, userName, password, page);
-			if (!resultList.isEmpty())
-				return new ResponseEntity<>(resultList, HttpStatus.OK);
-			else
-				return new ResponseEntity<>(null, HttpStatus.CONFLICT);
-		} catch (SQLException e) {
-			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
-		} catch (IllegalArgumentException e) {
-			return new ResponseEntity<>(null, HttpStatus.valueOf(400));
-		}
-
-	}
-
 	@Operation(summary = "Shows all tickets filtered by destination")
-	@GetMapping(path = "/filter/ticket/destination")
+	@GetMapping(path = "/ticket/filter")
 	public ResponseEntity<List<Ticket>> filterDestination(
 			@RequestBody @Parameter(required = true, example = "London") Page page) throws Exception {
-		List<Ticket> resultList;
+		List<Ticket> resultList = new ArrayList<>();
+		;
 		try {
 			resultList = rep.getTicketFilterDestination(url, userName, password, page);
 			if (!resultList.isEmpty())
@@ -125,7 +70,9 @@ public class TicketController {
 		} catch (SQLException e) {
 			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
 		} catch (IllegalArgumentException e) {
-			return new ResponseEntity<>(null, HttpStatus.valueOf(400));
+			Ticket tik = new Ticket(e.getMessage());
+			resultList.add(tik);
+			return new ResponseEntity<>(resultList, HttpStatus.valueOf(400));
 		}
 
 	}

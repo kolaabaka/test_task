@@ -12,9 +12,9 @@
 	<packaging>jar</packaging>
 	<groupId>com.banturov</groupId>
 	<artifactId>test_task</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>test_task</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Test task Banturov Nikolay</description>
 	<url />
 	<licenses>
 		<license />
@@ -89,6 +89,12 @@
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>0.12.6</version>
 		</dependency>
 
 	</dependencies>

@@ -26,6 +26,10 @@ public class Ticket implements Serializable{
 		this.price = price;
 		this.date = date;
 	}
+	
+	public Ticket(String message) {
+		this.date = message;
+	}
 
 	public Ticket() {
 	}

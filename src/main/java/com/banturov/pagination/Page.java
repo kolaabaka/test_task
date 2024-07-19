@@ -8,13 +8,24 @@ public class Page {
 	private int page;
 	@Schema(description = "Limit of entries per page, must be not empty and more than 0")
 	private int limit;
-	@Schema(description = "Required to filter entries, must be not empty")
-	private String filterValue;
+	@Schema(description = "Required to filter entries, must be not empty", example = "dd.mm.yy")
+	private String filterDate;
+	@Schema(description = "Required to filter entries, must be not empty", minimum = "3")
+	private String filterDeparture;
+	@Schema(description = "Required to filter entries, must be not empty", minimum = "3")
+	private String filterDestination;
+	@Schema(description = "Required to filter entries, must be not empty", minimum = "3")
+	private String filterCariier;
 
-	public Page(int page, int limit, String filterValue) {
+	public Page(int page, int limit, String filterDate, String filterDeparture, String filterDestination,
+			String filterCariier) {
+		super();
 		this.page = page;
 		this.limit = limit;
-		this.filterValue = filterValue;
+		this.filterDate = filterDate;
+		this.filterDeparture = filterDeparture;
+		this.filterDestination = filterDestination;
+		this.filterCariier = filterCariier;
 	}
 
 	public int getPage() {
@@ -33,12 +44,36 @@ public class Page {
 		this.limit = limit;
 	}
 
-	public String getFilterValue() {
-		return filterValue;
+	public String getFilterDate() {
+		return filterDate;
 	}
 
-	public void setFilterValue(String filterValue) {
-		this.filterValue = filterValue;
+	public void setFilterDate(String filterDate) {
+		this.filterDate = filterDate;
+	}
+
+	public String getFilterDeparture() {
+		return filterDeparture;
+	}
+
+	public void setFilterDeparture(String filterDeparture) {
+		this.filterDeparture = filterDeparture;
+	}
+
+	public String getFilterDestination() {
+		return filterDestination;
+	}
+
+	public void setFilterDestination(String filterDestination) {
+		this.filterDestination = filterDestination;
+	}
+
+	public String getFilterCariier() {
+		return filterCariier;
+	}
+
+	public void setFilterCariier(String filterCariier) {
+		this.filterCariier = filterCariier;
 	}
 
 }
