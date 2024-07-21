@@ -64,24 +64,25 @@ public class UserRepository {
 	}
 
 	// Login
-	public boolean checkUser(String url, String userName, String password, User user) throws SQLException {
+	public String checkUser(String url, String userName, String password, User user) throws SQLException {
 		if (user.getLogin().length() == 0 || user.getName().length() == 0 || user.getPassword().length() == 0) {
 			throw new IllegalArgumentException("Illegal user atributes");
 		}
 		try (Connection connection = DriverManager.getConnection(url, userName, password)) {
 			PreparedStatement loginUser = connection.prepareStatement(
-					"SELECT user_id FROM user WHERE user_login = ? and user_name = ? and user_password = ?;");
+					"SELECT user_login FROM user WHERE user_login = ? and user_name = ? and user_password = ?;");
 			loginUser.setString(1, user.getLogin());
 			loginUser.setString(2, user.getName());
 			loginUser.setString(3, user.getPassword());
 			ResultSet resultSet = loginUser.executeQuery();
 			if (!resultSet.isBeforeFirst()) {
-				return false;
+				return "";
 			}
+			resultSet.next();
+			String login = resultSet.getString(1);
 			loginUser.close();
 			connection.close();
-			log.log(Level.INFO, "User  " + user.getLogin() + " logged in");
-			return true;
+			return login;
 		} catch (SQLException e) {
 			log.log(Level.WARNING, e.getMessage());
 			throw new SQLException("SQL server error");

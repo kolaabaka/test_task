@@ -1,5 +1,6 @@
 package com.banturov.controller;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +10,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.banturov.configuration.PropertiesConfig;
 import com.banturov.entity.User;
-import com.banturov.kafka.KafkaTicketProducer;
+import com.banturov.jwt.JwtConverter;
 import com.banturov.repository.UserRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +25,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping(path = "/user", produces = "application/json")
 public class UserController {
-	
+
 	private static Logger log = Logger.getLogger(UserController.class.getName());
 
 	private static String url = null;
@@ -40,19 +40,23 @@ public class UserController {
 	@Autowired
 	private UserRepository rep;
 
-
+	@Autowired
+	private JwtConverter jwt;
+	
 	@Operation(summary = "Login user", description = "Allow login user")
 	@GetMapping(path = "/login")
 	public ResponseEntity<String> loginUser(
 			@RequestBody @Parameter(required = true, description = "An entity with data for user login") User user) {
-		boolean status;
+		String login = null;
 		try {
-			status = rep.checkUser(url, userName, password, user);
-			if (status)
-				return new ResponseEntity<>("true", HttpStatus.OK);
-			else
-				return new ResponseEntity<>("false", HttpStatus.NOT_ACCEPTABLE);
+			login = rep.checkUser(url, userName, password, user);
+			if (login.length() != 0) {
+				log.log(Level.INFO, "User  " + user.getLogin() + " logged in");
+				return new ResponseEntity<>(jwt.jwtMaker(login), HttpStatus.OK);
+			} else
+				return new ResponseEntity<>("No such user", HttpStatus.NOT_ACCEPTABLE);
 		} catch (Exception e) {
+			log.log(Level.WARNING, e.getMessage());
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 
@@ -65,11 +69,13 @@ public class UserController {
 		boolean status;
 		try {
 			status = rep.addUser(url, userName, password, user);
-			if (status)
+			if (status) {
+				log.log(Level.INFO, "New user created");
 				return new ResponseEntity<>("true", HttpStatus.CREATED);
-			else
+			} else
 				return new ResponseEntity<>("SQL exception, try later", HttpStatus.BAD_REQUEST); // SQL exception
 		} catch (Exception e) {
+			log.log(Level.WARNING, e.getMessage());
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST); // Already exist login
 		}
 

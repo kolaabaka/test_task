@@ -9,24 +9,19 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.stereotype.Component;
 
 import com.banturov.entity.BuyTicket;
-import com.banturov.entity.PurchaseFilter;
 import com.banturov.entity.Ticket;
-import com.banturov.pagination.Page;
+import com.banturov.pagination.FilterData;
 
-import org.json.JSONObject;
 import redis.clients.jedis.Jedis;
 
 @Component
@@ -38,13 +33,13 @@ public class TicketRepository {
 	}
 
 	// Get free tickets
-	public List<Ticket> getFreeTicket(String url, String userName, String password, Page page) {
+	public List<Ticket> getFreeTicket(String url, String userName, String password, int limit, int pageNumber) {
 		List<Ticket> resultList = new ArrayList<>();
 		try (Connection connection = DriverManager.getConnection(url, userName, password)) {
 			PreparedStatement getFreeTickets = connection
 					.prepareStatement("SELECT * FROM ticket WHERE buyer_id IS NULL limit ? offset ?;");
-			getFreeTickets.setInt(1, page.getLimit());
-			getFreeTickets.setInt(2, page.getLimit() * page.getPage());
+			getFreeTickets.setInt(1, limit);
+			getFreeTickets.setInt(2, limit * pageNumber);
 			ResultSet resultSet = getFreeTickets.executeQuery();
 			while (resultSet.next()) {
 				Ticket ticket = new Ticket(resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3),
@@ -58,75 +53,75 @@ public class TicketRepository {
 	}
 
 	// Filter by Destination
-	public List<Ticket> getTicketFilterDestination(String url, String userName, String password, Page page)
-			throws Exception {
+	public List<Ticket> getTicketFilterDestination(String url, String userName, String password, FilterData FilterData,
+			int limit, int pageNumber) throws Exception {
 		List<Ticket> resultList = new ArrayList<>();
-		if (page.getFilterCariier() != null) {
-			if (page.getFilterCariier().length() < 3) {
+		if (FilterData.getFilterCariier() != null) {
+			if (FilterData.getFilterCariier().length() < 3) {
 				throw new IllegalArgumentException("Carrier must be minimum 3 length");
 			}
 		}
-		if (page.getFilterDeparture() != null) {
-			if (page.getFilterDeparture().length() < 3) {
+		if (FilterData.getFilterDeparture() != null) {
+			if (FilterData.getFilterDeparture().length() < 3) {
 				throw new IllegalArgumentException("Departure must be minimum 3 length");
 			}
 		}
-		if (page.getFilterDestination() != null) {
-			if (page.getFilterDestination().length() < 3) {
+		if (FilterData.getFilterDestination() != null) {
+			if (FilterData.getFilterDestination().length() < 3) {
 				throw new IllegalArgumentException("Destination must be minimum 3 length");
 			}
 		}
-		if (page.getFilterDate() != null) {
-			if (page.getFilterDate().length() != 8) {
+		if (FilterData.getFilterDate() != null) {
+			if (FilterData.getFilterDate().length() != 8) {
 				throw new IllegalArgumentException("Date must be dd.mm.yy");
 			}
 		}
-		if (page.getFilterDestination() == null && page.getFilterDate() == null && page.getFilterDeparture() == null
-				&& page.getFilterCariier() == null) {
+		if (FilterData.getFilterDestination() == null && FilterData.getFilterDate() == null
+				&& FilterData.getFilterDeparture() == null && FilterData.getFilterCariier() == null) {
 			throw new IllegalArgumentException("Every argument is null");
 		}
 		try (Connection connection = DriverManager.getConnection(url, userName, password)) {
 			StringBuilder sqlQuery = new StringBuilder();
-			if (page.getFilterCariier() != null) { // Carrier
+			if (FilterData.getFilterCariier() != null) { // Carrier
 				if (sqlQuery.length() == 0) {
 					sqlQuery.append("WHERE ticket.carrier_id = (SELECT carrier_id FROM carrier WHERE name = '"
-							+ page.getFilterCariier() + "')");
+							+ FilterData.getFilterCariier() + "')");
 				} else {
-					sqlQuery.append(", ticket.carrier_id = (SELECT carrier_id FROM carrier WHERE name = '"
-							+ page.getFilterCariier() + "')");
+					sqlQuery.append("AND ticket.carrier_id = (SELECT carrier_id FROM carrier WHERE name = '"
+							+ FilterData.getFilterCariier() + "')");
 				}
 
 			}
-			if (page.getFilterDestination() != null) { // Destination
+			if (FilterData.getFilterDestination() != null) { // Destination
 				if (sqlQuery.length() == 0) {
 					sqlQuery.append("WHERE route_id = (SELECT route_id FROM route WHERE destination = '"
-							+ page.getFilterDestination() + "')");
+							+ FilterData.getFilterDestination() + "')");
 				} else {
-					sqlQuery.append(", route_id = (SELECT route_id FROM route WHERE destination = '"
-							+ page.getFilterDestination() + "')");
+					sqlQuery.append("AND route_id = (SELECT route_id FROM route WHERE destination = '"
+							+ FilterData.getFilterDestination() + "')");
 				}
 
 			}
-			if (page.getFilterDeparture() != null) { // Departure
+			if (FilterData.getFilterDeparture() != null) { // Departure
 				if (sqlQuery.length() == 0) {
 					sqlQuery.append("WHERE route_id = (SELECT route_id FROM route WHERE departure = '"
-							+ page.getFilterDeparture() + "')");
+							+ FilterData.getFilterDeparture() + "')");
 				} else {
-					sqlQuery.append(", route_id = (SELECT route_id FROM route WHERE departure = '"
-							+ page.getFilterDeparture() + "')");
+					sqlQuery.append("AND route_id = (SELECT route_id FROM route WHERE departure = '"
+							+ FilterData.getFilterDeparture() + "')");
 				}
 
 			}
-			if (page.getFilterDate() != null) { // Date
+			if (FilterData.getFilterDate() != null) { // Date
 				if (sqlQuery.length() == 0) {
-					sqlQuery.append("WHERE date = '" + page.getFilterDate() + "' ");
+					sqlQuery.append("WHERE date = '" + FilterData.getFilterDate() + "' ");
 				} else {
-					sqlQuery.append(", date = '" + page.getFilterDate() + "' ");
+					sqlQuery.append("AND date = '" + FilterData.getFilterDate() + "' ");
 				}
 
 			}
-			
-			sqlQuery.append(" limit " + page.getLimit() + " offset " + page.getLimit() * page.getPage() + ";");
+
+			sqlQuery.append(" limit " + limit + " offset " + limit * pageNumber + ";");
 			String sqlQueryPrepare = "SELECT * FROM ticket " + sqlQuery;
 			log.log(Level.INFO, sqlQueryPrepare);
 			PreparedStatement getFreeTickets = connection.prepareStatement(sqlQueryPrepare);
@@ -144,29 +139,31 @@ public class TicketRepository {
 	}
 
 	// Purchased tickets
-	public List<Ticket> showPurchasedTicket(String url, String userName, String password, PurchaseFilter purchaseFilter)
-			throws Exception {
-		if (purchaseFilter.getUser().getLogin().length() < 1) {
+	public List<Ticket> showPurchasedTicket(String url, String userName, String password, String login, int limit,
+			int pageNumber) throws Exception {
+		if (login.length() < 1) {
 			throw new IllegalArgumentException();
 		}
-		List<Ticket> resultList = new ArrayList<>();
+		ArrayList<Ticket> resultList = new ArrayList<>();
 		Jedis jedisClient = new Jedis("localhost", 6379, 12000, false);
-		String redisBase64 = jedisClient.get(purchaseFilter.getUser().getLogin());
+
+		String redisBase64 = jedisClient.get(login);
 		if (redisBase64 != null) {
 			byte[] decodedBytes = Base64.getDecoder().decode(redisBase64);
 			ByteArrayInputStream bais = new ByteArrayInputStream(decodedBytes);
 			ObjectInputStream ois = new ObjectInputStream(bais);
-			System.out.print(resultList);
+			Object ob = ois.readObject();
 			ois.close();
+			resultList.addAll((Collection<? extends Ticket>) ob);
 			log.log(Level.INFO, "Data from REDIS");
 			return resultList;
 		}
 		try (Connection connection = DriverManager.getConnection(url, userName, password)) {
 			PreparedStatement getPurchasedTickets = connection.prepareStatement(
 					"SELECT * FROM ticket where buyer_id = (SELECT user_id FROM user WHERE user_login = ?) limit ? offset ?;");
-			getPurchasedTickets.setString(1, purchaseFilter.getUser().getLogin());
-			getPurchasedTickets.setInt(2, purchaseFilter.getPage().getLimit());
-			getPurchasedTickets.setInt(3, purchaseFilter.getPage().getLimit() * purchaseFilter.getPage().getPage());
+			getPurchasedTickets.setString(1, login);
+			getPurchasedTickets.setInt(2, limit);
+			getPurchasedTickets.setInt(3, limit * pageNumber);
 			ResultSet resultSet = getPurchasedTickets.executeQuery();
 			while (resultSet.next()) {
 				Ticket ticket = new Ticket(resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3),
@@ -180,8 +177,8 @@ public class TicketRepository {
 			objectOut.close();
 			byte[] bytes = byteArray.toByteArray();
 			String encodedArray = Base64.getEncoder().encodeToString(bytes);
-			System.out.println(encodedArray);
-			jedisClient.set(purchaseFilter.getUser().getLogin(), encodedArray);
+			jedisClient.set(login, encodedArray);
+			jedisClient.expire(login, 15);
 			jedisClient.close();
 		} catch (Exception e) {
 			log.log(Level.WARNING, e.getMessage());
@@ -192,12 +189,12 @@ public class TicketRepository {
 	}
 
 	// Buy ticket
-	public String buyTicket(String url, String userName, String password, BuyTicket buyTicket)
+	public String buyTicket(String url, String userName, String password, int ticketId, String login)
 			throws SQLException, IllegalAccessException {
 		try (Connection connection = DriverManager.getConnection(url, userName, password)) {
 			PreparedStatement getPurchasedTickets = connection.prepareStatement(
 					"SELECT ticket_id, place_number FROM ticket WHERE buyer_id is null and ticket_id = ?;");
-			getPurchasedTickets.setInt(1, buyTicket.getTicket_id());
+			getPurchasedTickets.setInt(1, ticketId);
 			ResultSet resultSet = getPurchasedTickets.executeQuery();
 			if (!resultSet.isBeforeFirst()) {
 				throw new IllegalAccessException("Ticket already purchased or doesn`t exist");
@@ -205,8 +202,8 @@ public class TicketRepository {
 			resultSet.close();
 			PreparedStatement buyTickets = connection.prepareStatement(
 					"UPDATE ticket SET buyer_id = (SELECT user_id FROM user WHERE user_login = ?) WHERE ticket_id = ?;");
-			buyTickets.setString(1, buyTicket.getUser().getLogin());
-			buyTickets.setInt(2, buyTicket.getTicket_id());
+			buyTickets.setString(1, login);
+			buyTickets.setInt(2, ticketId);
 			int amountUpdate = buyTickets.executeUpdate();
 			getPurchasedTickets.close();
 			resultSet.close();
